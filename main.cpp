@@ -152,6 +152,76 @@ void tampilDanUrutkan() {
                  << setw(8)  << daftarKost[i].poinFasilitas << endl;
         }
 
+long long totalHargaRekursif(int index) {
+    if (index >= jumlahKost) {
+        return 0;
+    }
+    return daftarKost[index].harga + totalHargaRekursif(index + 1);
+}
+
+void cariDanRataRata() {
+    if (jumlahKost == 0) {
+        cout << "\nData Kosong (isi dulu di Menu 1)\n";
+        return;
+    }
+
+    string keyword;
+    cin.ignore();
+    cout << "\n=== CARI KOSAN & RATA-RATA HARGA ===\n";
+    cout << "Masukkan ID atau Nama Kosan: ";
+    getline(cin, keyword);
+
+    string keyKecil = keyword;
+    for (int i = 0; i < (int)keyKecil.length(); i++) {
+        if (keyKecil[i] >= 'A' && keyKecil[i] <= 'Z') {
+            keyKecil[i] = keyKecil[i] + 32;
+        }
+    }
+
+    bool ditemukan = false;
+
+    for (int i = 0; i < jumlahKost; i++) {
+        string idKecil = daftarKost[i].id;
+        for (int j = 0; j < (int)idKecil.length(); j++) {
+            if (idKecil[j] >= 'A' && idKecil[j] <= 'Z') {
+                idKecil[j] = idKecil[j] + 32;
+            }
+        }
+
+        string namaKecil = daftarKost[i].nama;
+        for (int j = 0; j < (int)namaKecil.length(); j++) {
+            if (namaKecil[j] >= 'A' && namaKecil[j] <= 'Z') {
+                namaKecil[j] = namaKecil[j] + 32;
+            }
+        }
+
+        if (idKecil == keyKecil || namaKecil.find(keyKecil) != string::npos) {
+            ditemukan = true;
+            cout << "\n+--------------------------------------------------+\n";
+            cout << "| DETAIL DATA KOSAN                                |\n";
+            cout << "+--------------------------------------------------+\n";
+            cout << "  ID Kosan       : " << daftarKost[i].id << "\n";
+            cout << "  Nama Kosan     : " << daftarKost[i].nama << "\n";
+            cout << "  Harga Sewa     : Rp " << daftarKost[i].harga << " / bulan\n";
+            cout << "  Jarak Kampus   : " << daftarKost[i].jarak << " m (" << daftarKost[i].labelJarak << ")\n";
+            cout << "  Fasilitas      : " << daftarKost[i].fasilitas << "\n";
+            cout << "  Poin Fasilitas : " << daftarKost[i].poinFasilitas << "/100\n";
+            cout << "+--------------------------------------------------+\n";
+        }
+    }
+
+    if (!ditemukan) {
+        cout << "\nData kosan tidak ditemukan.\n";
+    } else {
+        long long totalHarga = totalHargaRekursif(0);
+        double rataRata = static_cast<double>(totalHarga) / jumlahKost;
+
+        cout << fixed << setprecision(2);
+        cout << "Total Harga Seluruh Kos (" << jumlahKost << " data) : Rp " << totalHarga << "\n";
+        cout << "Rata-rata Harga Sewa Kosan       : Rp " << rataRata << "\n";
+    }
+}
+		
 void hitungpoin(){
     long long hargaMin = daftarKost[0].harga;
     long long hargaMax = daftarKost[0].harga;
